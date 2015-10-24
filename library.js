@@ -10,33 +10,34 @@ routeMoefou.onLoad = function ( params, callback )
 	{
 		var path = req.originalUrl.replace( /^\/moefou/, "" );
 
-		originalRes.redirect( "http://api.moefou.org" + path );
+		//originalRes.redirect( "http://api.moefou.org" + path );
 
-		//var options =
-		//{
-		//	"hostname": "api.moefou.org",
-		//	port: 80,
-		//	path: path,
-		//	method: "GET"
-		//};
-        //
-		//var proxyReq = http.request( options, function ( res )
-		//{
-		//	//res.setEncoding( "utf-8" );
-		//	res.on( "data", function ( chunk )
-		//	{
-		//		originalRes.send( chunk );
-		//	} );
-		//	res.on( "close", function ( )
-		//	{
-		//		console.log( "Connection closed." );
-		//	} );
-		//} );
-		//proxyReq.setTimeout( 10000, function ( )
-		//{
-		//	originalRes.send( { "error": "Time out" } );
-		//} );
-		//proxyReq.end( );
+		var options =
+		{
+			"hostname": "api.moefou.org",
+			port: 80,
+			path: path,
+			method: "GET"
+		};
+
+		var proxyReq = http.request( options, function ( res )
+		{
+			//res.setEncoding( "utf-8" );
+			res.on( "data", function ( chunk )
+			{
+				originalRes.end( chunk );
+				//originalRes.send( chunk );
+			} );
+			res.on( "close", function ( )
+			{
+				console.log( "Connection closed." );
+			} );
+		} );
+		proxyReq.setTimeout( 10000, function ( )
+		{
+			originalRes.json( { "error": "Time out" } );
+		} );
+		proxyReq.end( );
 	} );
 
 	router.get( "/moefm/*", function ( req, originalRes )
