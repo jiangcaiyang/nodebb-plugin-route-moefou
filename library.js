@@ -9,9 +9,6 @@ routeMoefou.onLoad = function ( params, callback )
 	router.get( "/moefou/*", function ( req, originalRes )
 	{
 		var path = req.originalUrl.replace( /^\/moefou/, "" );
-
-		//originalRes.redirect( "http://api.moefou.org" + path );
-
 		var options =
 		{
 			"hostname": "api.moefou.org",
@@ -22,15 +19,13 @@ routeMoefou.onLoad = function ( params, callback )
 
 		var proxyReq = http.request( options, function ( res )
 		{
-			//res.setEncoding( "utf-8" );
+			var buffers = "";
 			res.on( "data", function ( chunk )
 			{
-				originalRes.end( chunk );
-				//originalRes.send( chunk );
-			} );
-			res.on( "close", function ( )
+				buffers += chunk;
+			} ).on( "end", function( )
 			{
-				console.log( "Connection closed." );
+				originalRes.send( buffers );
 			} );
 		} );
 		proxyReq.setTimeout( 10000, function ( )
