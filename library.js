@@ -2,79 +2,49 @@
 
 var http = require( "http" );
 
+function proxyVisit( originalRes, hostName, path )
+{
+	var options =
+	{
+		"hostname": hostName,
+		"port": 80,
+		"path": path,
+		"method": "GET"
+	};
+
+	var proxyReq = http.request( options, function ( res )
+	{
+		var buffers = "";
+		res.on( "data", function ( chunk )
+		{
+			buffers += chunk;
+		} ).on( "end", function( )
+		{
+			originalRes.send( buffers );
+		} );
+	} );
+	proxyReq.setTimeout( 10000, function ( )
+	{
+		originalRes.json( { "error": "Time out" } );
+	} );
+	proxyReq.end( );
+}
+
 var routeMoefou = { };
 routeMoefou.onLoad = function ( params, callback )
 {
 	var router = params.router;
-	router.get( "/moefou/*", function ( req, originalRes )
+	router.get( "/moefou/*", function ( req, res )
 	{
 		var path = req.originalUrl.replace( /^\/moefou/, "" );
-		var options =
-		{
-			"hostname": "api.moefou.org",
-			port: 80,
-			path: path,
-			method: "GET"
-		};
-
-		var proxyReq = http.request( options, function ( res )
-		{
-			var buffers = "";
-			res.on( "data", function ( chunk )
-			{
-				buffers += chunk;
-			} ).on( "end", function( )
-			{
-				originalRes.send( buffers );
-			} );
-		} );
-		proxyReq.setTimeout( 10000, function ( )
-		{
-			originalRes.json( { "error": "Time out" } );
-		} );
-		proxyReq.end( );
+		proxyVisit( res, "api.moefou.org", path );
 	} );
 
-	router.get( "/moefm/*", function ( req, originalRes )
+	router.get( "/moefm/*", function ( req, res )
 	{
 		var path = req.originalUrl.replace( /^\/moefm/, "" );
-
-		originalRes.redirect( "http://moe.fm" + path );
-
-		//var options =
-		//{
-		//	"hostname": "moe.fm",
-		//	port: 80,
-		//	path: path,
-		//	method: "GET"
-		//};
-        //
-		//try
-		//{
-		//	var proxyReq = http.request( options, function ( res )
-		//	{
-		//		res.setEncoding( "utf-8" );
-		//		res.on( "data", function ( chunk )
-		//		{
-		//			originalRes.send( chunk );
-		//		} );
-		//		res.on( "close", function ( )
-		//		{
-		//			console.log( "Connection closed." );
-		//		} );
-		//	} );
-		//	proxyReq.end( );
-		//}
-		//catch ( err )
-		//{
-		//	originalRes.send( { "error": err } );
-		//}
+		proxyVisit( res, "moe.fm", path );
 	} );
-
-	//console.log( "it comes here." );
-
-	//params.router.use( require( "./server/home" ) );
-	//params.router.use( require( "./server/client" ) );
 
 	callback( );
 };
