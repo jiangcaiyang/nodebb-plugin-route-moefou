@@ -1,0 +1,23 @@
+{
+  "id": "nodebb-plugin-route-moefou",
+  "url": "https://github.com/jiangcaiyang/nodebb-plugin-route-moefou",
+  "library": "library.js",
+  "less":
+  [
+  ],
+  "scripts":
+  [
+  ],
+  "staticDirs":
+  {
+  },
+  "languages": "public/languages",
+  "defaultLang": "zh_CN",
+  "hooks":
+  [
+      {
+          "hook": "static:app.load",
+          "method": "onLoad"
+      }
+  ]
+}

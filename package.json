@@ -1,0 +1,23 @@
+{
+  "name": "nodebb-plugin-route-moefou",
+  "version": "0.0.5",
+  "description": "This plugin is aimed at routing moefou service. In client application, moefou is always too slow to show its lists.",
+  "main": "library.js",
+  "scripts": {
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "null"
+  ],
+  "author": "jiangcaiyang",
+  "license": "MIT",
+  "repository":
+  {
+    "type": "git",
+    "url": "git+https://github.com/jiangcaiyang/nodebb-plugin-route-moefou"
+  },
+  "devDependencies": {
+  },
+  "readme": "README.md"
+}
