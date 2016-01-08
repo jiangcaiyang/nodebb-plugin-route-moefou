@@ -1,6 +1,8 @@
 "use strict";
 
 var http = require( "http" );
+var fs = require( "fs" );
+var express = require( "express" );
 
 function proxyVisit( originalRes, hostName, path )
 {
@@ -44,6 +46,32 @@ routeMoefou.onLoad = function ( params, callback )
 	{
 		var path = req.originalUrl.replace( /^\/moefm/, "" );
 		proxyVisit( res, "moe.fm", path );
+	} );
+
+	// 为了图方便省事儿，让它也代理浏览bugreports.qt.io
+	// forum.qt.io以及photobucket.org
+	router.get( "/qtbugreports/*", function ( req, res )
+	{
+		var path = req.originalUrl.replace( /^\/qtbugreports/, "" );
+		proxyVisit( res, "bugreports.qt.io", path );
+	} );
+
+	router.get( "/qtforum/*", function ( req, res )
+	{
+		var path = req.originalUrl.replace( /^\/qtforum/, "" );
+		proxyVisit( res, "forum.qt.io", path );
+	} );
+
+	router.get( "/photobucket/*", function ( req, res )
+	{
+		var path = req.originalUrl.replace( /^\/photobucket/, "" );
+		proxyVisit( res, "s1288.photobucket.com", path );
+	} );
+
+	router.get( "/qtcreatorenhancement/*", function ( req, res )
+	{
+		var realPath = __dirname + "/../../../../QtProject" + req.originalUrl;
+		res.download( realPath );
 	} );
 
 	callback( );
