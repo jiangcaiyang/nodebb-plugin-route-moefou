@@ -71,6 +71,8 @@ routeMoefou.onLoad = function ( params, callback )
 	router.get( "/qtcreatorenhancement/*", function ( req, res )
 	{
 		var realPath = __dirname + "/../../../../QtProject" + req.originalUrl;
+		var questionPos = realPath.indexOf( '?' );
+		realPath = realPath.substr( 0, questionPos );
 		res.download( realPath );
 	} );
 
